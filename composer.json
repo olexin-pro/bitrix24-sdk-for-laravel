@@ -1,0 +1,21 @@
+{
+    "name": "olexin-pro/bitrix24-sdk-for-laravel",
+    "description": "Bitrix24 SDK for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "OlexinPro\\\\Bitrix24\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "ext-curl": "*",
+        "ext-json": "*",
+        "illuminate/contracts": "^10|^11",
+        "illuminate/support": "^10|^11",
+        "illuminate/http": "^10|^11",
+        "illuminate/events": "^10|^11"
+    }
+}
