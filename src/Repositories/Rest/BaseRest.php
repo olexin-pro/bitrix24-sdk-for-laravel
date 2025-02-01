@@ -11,7 +11,7 @@ use OlexinPro\Bitrix24\Bitrix24Client;
 
 abstract class BaseRest
 {
-    public function request(string $method, array $params): Response
+    public function request(string $method, array $params = []): Response
     {
         $request = ApiRequest::post($method)
             ->setBody($params);

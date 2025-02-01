@@ -6,13 +6,19 @@ namespace OlexinPro\Bitrix24;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Client\PendingRequest;
+use OlexinPro\Bitrix24\API\Client;
 use OlexinPro\Bitrix24\Exceptions\OAuthAuthorizationRequiredException;
 use OlexinPro\Bitrix24\Services\Bitrix24OAuthService;
 use Throwable;
 
-class Bitrix24Client
+class Bitrix24Client extends Client
 {
     protected function baseUrl(): string
+    {
+        return $this->getBitrix24BaseUrl();
+    }
+
+    public function getBitrix24BaseUrl(): string
     {
         $domain = config('bitrix24.domain');
 

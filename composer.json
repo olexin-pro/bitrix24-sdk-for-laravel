@@ -22,7 +22,10 @@
         "laravel": {
             "providers": [
                 "OlexinPro\\Bitrix24\\Bitrix24ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Bitrix24Batch": "OlexinPro\\Bitrix24\\Facades\\Bitrix24Batch"
+            }
         }
     }
 }
