@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Contracts;
 
-interface TokenStorage
+interface TokenStorageInterface
 {
     public function getToken(): ?array;
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace OlexinPro\Bitrix24\Repository;
 
 use Illuminate\Support\Facades\Cache;
-use OlexinPro\Bitrix24\Contracts\TokenStorage;
+use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 
-class OAuthTokenRepository implements TokenStorage
+class OAuthTokenRepository implements TokenStorageInterface
 {
     private const CACHE_KEY = 'bitrix24_oauth_token';
 

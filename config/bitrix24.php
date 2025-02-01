@@ -13,6 +13,13 @@ return [
     'auth_connector' => env('BITRIX24_AUTH_CONNECTOR', 'V8mDZ9Fh4SaEd4dRuZYYjyYRmFuYXpRD'),
 
     'events' => [
+        'clear_on_load_offline_events' => true,
         'laravel_event_classes_cache_key' => 'laravel_event_classes',
+    ],
+    'routes' => [
+        'event_webhook_path' => '/event/webhook',
+        'event_webhook_middleware' => [
+
+        ]
     ]
 ];

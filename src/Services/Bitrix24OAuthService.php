@@ -8,7 +8,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use OlexinPro\Bitrix24\Contracts\TokenStorage;
+use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 use OlexinPro\Bitrix24\Exceptions\MissingAuthCodeException;
 use OlexinPro\Bitrix24\Exceptions\TokenRefreshException;
 
@@ -19,9 +19,9 @@ class Bitrix24OAuthService
     private string $clientSecret;
     private string $tokenUrl;
     private string $authConnector;
-    private TokenStorage $tokenRepository;
+    private TokenStorageInterface $tokenRepository;
 
-    public function __construct(TokenStorage $tokenRepository)
+    public function __construct(TokenStorageInterface $tokenRepository)
     {
         $this->clientId = config('bitrix24.client_id');
         $this->clientSecret = config('bitrix24.client_secret');
