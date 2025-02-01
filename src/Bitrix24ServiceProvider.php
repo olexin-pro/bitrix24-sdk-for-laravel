@@ -11,7 +11,7 @@ use OlexinPro\Bitrix24\API\Batch\BatchCommandCollection;
 use OlexinPro\Bitrix24\API\Client;
 use OlexinPro\Bitrix24\Console\Commands\LoadOfflineEventsFromBitrix24;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
-use OlexinPro\Bitrix24\Exceptions\OAuthAuthorizationRequiredException;
+use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 use OlexinPro\Bitrix24\Repository\OAuthTokenRepository;
 use OlexinPro\Bitrix24\Repository\Rest\Notify;
 use OlexinPro\Bitrix24\Services\Bitrix24OAuthService;
@@ -29,7 +29,6 @@ class Bitrix24ServiceProvider extends ServiceProvider
         );
 
         $this->bindClasses();
-        $this->bootCommands();
     }
 
     /**
@@ -38,32 +37,19 @@ class Bitrix24ServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
-
-        Http::macro('bitrix24', function () {
-            $bitrixOAuthService = app()->make(Bitrix24OAuthService::class);
-
-            if ($bitrixOAuthService->needAuthorize()) {
-                throw new OAuthAuthorizationRequiredException();
-            }
-
-            $authToken = $bitrixOAuthService->getValidToken();
-
-            return Http::acceptJson()
-                ->withOptions([
-                    'query' => ['auth' => $authToken]
-                ])
-                ->baseUrl((new Bitrix24Client())->getBitrix24BaseUrl());
-        });
+        $this->macrosAndMixins();
+        $this->bootCommands();
     }
 
     private function bindClasses(): void
     {
         $this->app->bind(NotificationInterface::class, Notify::class);
+        $this->app->bind(TokenStorageInterface::class, OAuthTokenRepository::class);
 
 
         $this->app->singleton(Bitrix24OAuthService::class, function ($app) {
             return new Bitrix24OAuthService(
-                $app->make(OAuthTokenRepository::class)
+                $app->make(TokenStorageInterface::class)
             );
         });
 
@@ -74,14 +60,27 @@ class Bitrix24ServiceProvider extends ServiceProvider
             );
         });
         $this->app->alias('bitrix24.batch', Batch::class);
+
+        $this->app->bind('bitrix24.client', function ($app) {
+            return new Bitrix24Client();
+        });
+        $this->app->alias('bitrix24.client', Bitrix24Client::class);
     }
 
-    public function bootCommands(): void
+    private function bootCommands(): void
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
                 LoadOfflineEventsFromBitrix24::class,
             ]);
         }
+    }
+
+    private function macrosAndMixins(): void
+    {
+        Http::macro('bitrix24', function () {
+            $bitrix24client = new Bitrix24Client();
+            return $bitrix24client->getHttp();
+        });
     }
 }

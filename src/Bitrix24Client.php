@@ -15,11 +15,6 @@ class Bitrix24Client extends Client
 {
     protected function baseUrl(): string
     {
-        return $this->getBitrix24BaseUrl();
-    }
-
-    public function getBitrix24BaseUrl(): string
-    {
         $domain = config('bitrix24.domain');
 
         if (!preg_match('/^https?:\/\//', $domain)) {
@@ -50,4 +45,8 @@ class Bitrix24Client extends Client
         ]);
     }
 
+    public function getHttp(): PendingRequest
+    {
+        return $this->getBaseRequest();
+    }
 }
