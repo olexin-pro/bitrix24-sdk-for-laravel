@@ -18,8 +18,8 @@ return [
     ],
     'routes' => [
         'event_webhook_path' => '/event/webhook',
-        'event_webhook_middleware' => [
-
-        ]
+        'oauth_install_token' => env('BITRIX24_OAUTH_INSTALL_TOKEN', 'oauth/install'),
+        'oauth_redirect_to_bitrix24' => env('BITRIX24_OAUTH_REDIRECT', 'oauth/authorize'),
+        'event_webhook_middleware' => []
     ]
 ];

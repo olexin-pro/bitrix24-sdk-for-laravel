@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OlexinPro\Bitrix24\Repository;
+namespace OlexinPro\Bitrix24\Repositories;
 
 use Illuminate\Support\Facades\Cache;
 use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;

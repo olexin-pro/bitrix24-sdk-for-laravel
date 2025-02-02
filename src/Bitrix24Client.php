@@ -15,15 +15,7 @@ class Bitrix24Client extends Client
 {
     protected function baseUrl(): string
     {
-        $domain = config('bitrix24.domain');
-
-        if (!preg_match('/^https?:\/\//', $domain)) {
-            $domain = 'https://' . $domain;
-        }
-
-        $domain = rtrim($domain, '/');
-
-        return sprintf('%s/rest/', $domain);
+        return sprintf('%s/rest/', bitrix24Domain());
     }
 
     /**

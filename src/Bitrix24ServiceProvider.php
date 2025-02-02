@@ -12,8 +12,8 @@ use OlexinPro\Bitrix24\API\Client;
 use OlexinPro\Bitrix24\Console\Commands\LoadOfflineEventsFromBitrix24;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
 use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
-use OlexinPro\Bitrix24\Repository\OAuthTokenRepository;
-use OlexinPro\Bitrix24\Repository\Rest\Notify;
+use OlexinPro\Bitrix24\Repositories\OAuthTokenRepository;
+use OlexinPro\Bitrix24\Repositories\Rest\Notify;
 use OlexinPro\Bitrix24\Services\Bitrix24OAuthService;
 
 class Bitrix24ServiceProvider extends ServiceProvider
@@ -36,6 +36,8 @@ class Bitrix24ServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        //require_once __DIR__ . '/helpers.php';
+
         $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
         $this->macrosAndMixins();
         $this->bootCommands();

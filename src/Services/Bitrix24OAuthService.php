@@ -121,6 +121,7 @@ class Bitrix24OAuthService
     public function installToken(Request $request): string
     {
         if (!$request->has('code')) {
+            dd($request->all());
             throw new MissingAuthCodeException();
         }
 
@@ -157,16 +158,22 @@ class Bitrix24OAuthService
 
     /**
      */
-    public function authorize(): RedirectResponse
+    public function authorizeRedirect(): RedirectResponse
     {
+        return response()->redirectTo($this->getOAuthUrl());
+    }
+
+    public function getOAuthUrl(): string
+    {
+        $domain = \bitrix24Domain();
+
         $params = [
             'client_id' => $this->clientId,
             'state' => $this->authConnector,
             'redirect_uri' => url('/test/token')
         ];
 
-        $url = sprintf('%s%s?%s', config('bitrix.domain'), '/oauth/authorize/', http_build_query($params));
-        return response()->redirectTo($url);
+        return sprintf('%s%s?%s', $domain, '/oauth/authorize/', http_build_query($params));
     }
 
 }

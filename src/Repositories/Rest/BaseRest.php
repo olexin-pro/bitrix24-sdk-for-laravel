@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OlexinPro\Bitrix24\Repository\Rest;
+namespace OlexinPro\Bitrix24\Repositories\Rest;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Client\Response;

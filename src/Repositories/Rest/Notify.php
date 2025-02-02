@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OlexinPro\Bitrix24\Repository\Rest;
+namespace OlexinPro\Bitrix24\Repositories\Rest;
 
 use Illuminate\Http\Client\Response;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
