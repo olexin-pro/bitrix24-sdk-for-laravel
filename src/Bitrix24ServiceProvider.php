@@ -10,6 +10,7 @@ use OlexinPro\Bitrix24\API\Batch\Batch;
 use OlexinPro\Bitrix24\API\Batch\BatchCommandCollection;
 use OlexinPro\Bitrix24\API\Client;
 use OlexinPro\Bitrix24\Console\Commands\LoadOfflineEventsFromBitrix24;
+use OlexinPro\Bitrix24\Contracts\CrmGroupRest;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\UserInterface;
 use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
@@ -48,6 +49,7 @@ class Bitrix24ServiceProvider extends ServiceProvider
     {
         $this->app->bind(NotificationInterface::class, Rest\Notify::class);
         $this->app->bind(UserInterface::class, Rest\User::class);
+        $this->app->bind(CrmGroupRest::class, CrmGroupRest::class);
         $this->app->bind(TokenStorageInterface::class, OAuthTokenRepository::class);
 
 

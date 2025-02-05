@@ -6,7 +6,7 @@ namespace OlexinPro\Bitrix24\Contracts;
 
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
 
-interface NotifyInterface
+interface NotificationFactoryInterface
 {
     public function notify(): NotificationInterface;
 }
