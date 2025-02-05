@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Services;
 
+use DateTimeInterface;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -96,10 +97,10 @@ class Bitrix24OAuthService
     /**
      * Проверить, истёк ли токен
      *
-     * @param string $expiresAt
+     * @param DateTimeInterface $expiresAt
      * @return bool
      */
-    private function isTokenExpired(string $expiresAt): bool
+    private function isTokenExpired(DateTimeInterface $expiresAt): bool
     {
         return now()->greaterThanOrEqualTo($expiresAt);
     }

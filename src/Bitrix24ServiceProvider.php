@@ -11,9 +11,10 @@ use OlexinPro\Bitrix24\API\Batch\BatchCommandCollection;
 use OlexinPro\Bitrix24\API\Client;
 use OlexinPro\Bitrix24\Console\Commands\LoadOfflineEventsFromBitrix24;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\UserInterface;
 use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 use OlexinPro\Bitrix24\Repositories\OAuthTokenRepository;
-use OlexinPro\Bitrix24\Repositories\Rest\Notify;
+use OlexinPro\Bitrix24\Repositories\Rest;
 use OlexinPro\Bitrix24\Services\Bitrix24OAuthService;
 
 class Bitrix24ServiceProvider extends ServiceProvider
@@ -45,7 +46,8 @@ class Bitrix24ServiceProvider extends ServiceProvider
 
     private function bindClasses(): void
     {
-        $this->app->bind(NotificationInterface::class, Notify::class);
+        $this->app->bind(NotificationInterface::class, Rest\Notify::class);
+        $this->app->bind(UserInterface::class, Rest\User::class);
         $this->app->bind(TokenStorageInterface::class, OAuthTokenRepository::class);
 
 
@@ -67,6 +69,11 @@ class Bitrix24ServiceProvider extends ServiceProvider
             return new Bitrix24Client();
         });
         $this->app->alias('bitrix24.client', Bitrix24Client::class);
+
+        $this->app->bind('bitrix24.rest', function ($app) {
+            return new Bitrix24RestFactory();
+        });
+        $this->app->alias('bitrix24.rest', Bitrix24RestFactory::class);
     }
 
     private function bootCommands(): void
