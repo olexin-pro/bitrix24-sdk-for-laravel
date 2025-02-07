@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Entities\DTO\Rest;
 
-use OlexinPro\Bitrix24\Entities\DTO\AbstractBitrix24DTO;
-use OlexinPro\Bitrix24\Entities\DTO\Bitrix24Field;
-use OlexinPro\Bitrix24\Entities\DTO\Bitrix24TypeEnum;
+use OlexinPro\Bitrix24\Entities\DTO\{
+    AbstractBitrix24DTO,
+    Bitrix24Field,
+    Bitrix24TypeEnum
+};
 
 final class DealEntity extends AbstractBitrix24DTO
 {

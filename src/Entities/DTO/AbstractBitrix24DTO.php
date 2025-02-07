@@ -3,18 +3,20 @@
 namespace OlexinPro\Bitrix24\Entities\DTO;
 
 use InvalidArgumentException;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\ArrayConverter;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\Bitrix24TypeConverterInterface;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\BooleanConverter;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\CollectionConverter;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\DateConverter;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\DynamicConverter;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\FloatConverter;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\IntConverter;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\StringConverter;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
+use OlexinPro\Bitrix24\Entities\DTO\Converters\{
+    Bitrix24TypeConverterInterface,
+    ArrayConverter,
+    BooleanConverter,
+    CollectionConverter,
+    DateConverter,
+    DynamicConverter,
+    FloatConverter,
+    IntConverter,
+    StringConverter
+};
 
 abstract class AbstractBitrix24DTO
 {
