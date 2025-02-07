@@ -12,3 +12,11 @@ if (!function_exists('bitrix24Domain')) {
         return rtrim($domain, '/');
     }
 }
+
+if (!function_exists('json_validate')) {
+    function json_validate(string $value): bool
+    {
+        json_decode($value);
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+}
