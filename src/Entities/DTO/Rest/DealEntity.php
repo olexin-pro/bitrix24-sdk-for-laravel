@@ -9,6 +9,7 @@ use OlexinPro\Bitrix24\Entities\DTO\{
     Bitrix24Field,
     Bitrix24TypeEnum
 };
+use DateTimeInterface;
 
 final class DealEntity extends AbstractBitrix24DTO
 {
@@ -19,10 +20,7 @@ final class DealEntity extends AbstractBitrix24DTO
     public string $title;
 
     #[Bitrix24Field('TYPE_ID', Bitrix24TypeEnum::STRING)]
-    public string $typeId;
-
-    #[Bitrix24Field('TypeIdTitle', Bitrix24TypeEnum::STRING)]
-    public string $typeIdTitle;
+    public ?string $typeId;
 
     #[Bitrix24Field('CATEGORY_ID', Bitrix24TypeEnum::STRING)]
     public string $categoryId;
@@ -31,25 +29,25 @@ final class DealEntity extends AbstractBitrix24DTO
     public string $stageId;
 
     #[Bitrix24Field('IS_RECURRING', Bitrix24TypeEnum::BOOLEAN)]
-    public bool $isRecurring;
+    public ?bool $isRecurring;
 
     #[Bitrix24Field('IS_RETURN_CUSTOMER', Bitrix24TypeEnum::BOOLEAN)]
-    public bool $isReturnCustomer;
+    public ?bool $isReturnCustomer;
 
     #[Bitrix24Field('IS_REPEATED_APPROACH', Bitrix24TypeEnum::BOOLEAN)]
-    public bool $isRepeatedApproach;
+    public ?bool $isRepeatedApproach;
 
     #[Bitrix24Field('PROBABILITY', Bitrix24TypeEnum::INT)]
-    public int $probability;
+    public ?int $probability;
 
     #[Bitrix24Field('CURRENCY_ID', Bitrix24TypeEnum::STRING)]
-    public string $currencyId;
+    public ?string $currencyId;
 
     #[Bitrix24Field('OPPORTUNITY', Bitrix24TypeEnum::FLOAT)]
-    public float $opportunity;
+    public ?float $opportunity;
 
     #[Bitrix24Field('IS_MANUAL_OPPORTUNITY', Bitrix24TypeEnum::BOOLEAN)]
-    public bool $isManualOpportunity;
+    public ?bool $isManualOpportunity;
 
     #[Bitrix24Field('TAX_VALUE', Bitrix24TypeEnum::FLOAT)]
     public ?float $taxValue;
@@ -61,10 +59,10 @@ final class DealEntity extends AbstractBitrix24DTO
     public ?int $contactId;
 
     #[Bitrix24Field('BEGINDATE', Bitrix24TypeEnum::DATE)]
-    public ?\DateTimeInterface $beginDate;
+    public ?DateTimeInterface $beginDate;
 
     #[Bitrix24Field('CLOSEDATE', Bitrix24TypeEnum::DATE)]
-    public ?\DateTimeInterface $closeDate;
+    public ?DateTimeInterface $closeDate;
 
     #[Bitrix24Field('OPENED', Bitrix24TypeEnum::BOOLEAN)]
     public bool $opened;
@@ -76,16 +74,16 @@ final class DealEntity extends AbstractBitrix24DTO
     public ?string $comments;
 
     #[Bitrix24Field('ASSIGNED_BY_ID', Bitrix24TypeEnum::INT)]
-    public int $assignedById;
+    public ?int $assignedById;
 
     #[Bitrix24Field('SOURCE_ID', Bitrix24TypeEnum::STRING)]
-    public string $sourceId;
+    public ?string $sourceId;
 
     #[Bitrix24Field('SOURCE_DESCRIPTION', Bitrix24TypeEnum::STRING)]
-    public string $sourceDescription;
+    public ?string $sourceDescription;
 
     #[Bitrix24Field('ADDITIONAL_INFO', Bitrix24TypeEnum::STRING)]
-    public string $additionalInfo;
+    public ?string $additionalInfo;
 
     #[Bitrix24Field('LOCATION_ID')]
     public ?string $locationId;

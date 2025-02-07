@@ -6,11 +6,11 @@ use InvalidArgumentException;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\{
-    Bitrix24TypeConverterInterface,
+use OlexinPro\Bitrix24\Entities\DTO\Converters\{Bitrix24TypeConverterInterface,
     ArrayConverter,
     BooleanConverter,
     CollectionConverter,
+    CrmContactConverter,
     DateConverter,
     DynamicConverter,
     FloatConverter,
@@ -112,6 +112,7 @@ abstract class AbstractBitrix24DTO
                 Bitrix24TypeEnum::STRING => new StringConverter(),
                 Bitrix24TypeEnum::DATE => new DateConverter(),
                 Bitrix24TypeEnum::BOOLEAN => new BooleanConverter(),
+                Bitrix24TypeEnum::CRM_CONTACT_FIELD => new CrmContactConverter(),
                 default => new DynamicConverter(),
             };
         }

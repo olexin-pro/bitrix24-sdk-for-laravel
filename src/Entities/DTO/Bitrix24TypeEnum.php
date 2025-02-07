@@ -12,4 +12,5 @@ enum Bitrix24TypeEnum: string
     case COLLECTION = 'collection';
     case DATE = 'date';
     case DYNAMIC = 'dynamic';
+    case CRM_CONTACT_FIELD = 'crm_multi_field';
 }
