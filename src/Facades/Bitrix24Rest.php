@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @method \OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface notify()
  * @method \OlexinPro\Bitrix24\Contracts\Rest\UserInterface user()
+ * @method \OlexinPro\Bitrix24\Contracts\CrmGroupInterface crm()
  */
 class Bitrix24Rest extends Facade
 {

@@ -3,11 +3,8 @@
 namespace OlexinPro\Bitrix24\Entities\DTO;
 
 use InvalidArgumentException;
-use ReflectionAttribute;
-use ReflectionClass;
-use ReflectionProperty;
-use OlexinPro\Bitrix24\Entities\DTO\Converters\{Bitrix24TypeConverterInterface,
-    ArrayConverter,
+use OlexinPro\Bitrix24\Entities\DTO\Converters\{ArrayConverter,
+    Bitrix24TypeConverterInterface,
     BooleanConverter,
     CollectionConverter,
     CrmContactConverter,
@@ -15,12 +12,13 @@ use OlexinPro\Bitrix24\Entities\DTO\Converters\{Bitrix24TypeConverterInterface,
     DynamicConverter,
     FloatConverter,
     IntConverter,
-    StringConverter
-};
+    StringConverter};
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionProperty;
 
 abstract class AbstractBitrix24DTO
 {
-
     protected array $data;
     protected array $converters = [];
     private static array $reflectionCache = [];

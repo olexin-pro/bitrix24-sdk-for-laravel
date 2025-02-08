@@ -13,6 +13,11 @@ use Throwable;
 
 class Bitrix24Client extends Client
 {
+    public function __construct(
+        private Bitrix24OAuthService $authService,
+    ) {
+    }
+
     protected function baseUrl(): string
     {
         return sprintf('%s/rest/', bitrix24Domain());
@@ -24,13 +29,11 @@ class Bitrix24Client extends Client
      */
     protected function authorize(PendingRequest $request): PendingRequest
     {
-        $bitrixOAuthService = app()->make(Bitrix24OAuthService::class);
-
-        if ($bitrixOAuthService->needAuthorize()) {
+        if ($this->authService->needAuthorize()) {
             throw new OAuthAuthorizationRequiredException();
         }
 
-        $authToken = $bitrixOAuthService->getValidToken();
+        $authToken = $this->authService->getValidToken();
 
         return $request->withOptions([
             'query' => ['auth' => $authToken]

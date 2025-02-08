@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Entities\DTO\Rest;
 
-use OlexinPro\Bitrix24\Entities\DTO\{AbstractBitrix24DTO,
-    Bitrix24Field,
-    Bitrix24TypeEnum
-};
 use DateTimeInterface;
+use OlexinPro\Bitrix24\Entities\DTO\{AbstractBitrix24DTO, Bitrix24Field, Bitrix24TypeEnum};
 
 final class LeadEntity extends AbstractBitrix24DTO
 {
@@ -24,13 +21,13 @@ final class LeadEntity extends AbstractBitrix24DTO
     #[Bitrix24Field('COMMENTS', Bitrix24TypeEnum::STRING)]
     public ?string $comments;
 
-    #[Bitrix24Field('COMPANY_ID', Bitrix24TypeEnum::STRING)]
+    #[Bitrix24Field('COMPANY_ID', Bitrix24TypeEnum::INT)]
     public ?int $companyId;
 
     #[Bitrix24Field('COMPANY_TITLE', Bitrix24TypeEnum::STRING)]
     public ?string $companyTitle;
 
-    #[Bitrix24Field('CONTACT_ID', Bitrix24TypeEnum::STRING)]
+    #[Bitrix24Field('CONTACT_ID', Bitrix24TypeEnum::INT)]
     public ?int $contactId;
 
     #[Bitrix24Field('CONTACT_IDS', Bitrix24TypeEnum::ARRAY)]

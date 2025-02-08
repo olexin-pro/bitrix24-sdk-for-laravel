@@ -4,29 +4,35 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24;
 
-use Illuminate\Support\Facades\App;
 use OlexinPro\Bitrix24\Contracts\CrmFactoryInterface;
-use OlexinPro\Bitrix24\Contracts\CrmGroupRest;
+use OlexinPro\Bitrix24\Contracts\CrmGroupInterface;
 use OlexinPro\Bitrix24\Contracts\NotificationFactoryInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\UserInterface;
 use OlexinPro\Bitrix24\Contracts\UserFactoryInterface;
 
-class Bitrix24RestFactory implements NotificationFactoryInterface, UserFactoryInterface, CrmFactoryInterface
+readonly class Bitrix24RestFactory implements NotificationFactoryInterface, UserFactoryInterface, CrmFactoryInterface
 {
+    public function __construct(
+        private NotificationInterface $notification,
+        private UserInterface $user,
+        private CrmGroupInterface $crmGroupRest
+    ) {
+    }
+
     public function notify(): NotificationInterface
     {
-        return App::make(NotificationInterface::class);
+        return $this->notification;
     }
 
     public function user(): UserInterface
     {
-        return App::make(UserInterface::class);
+        return $this->user;
     }
 
-    public function crm(): CrmGroupRest
+    public function crm(): CrmGroupInterface
     {
-        return App::make(CrmGroupRest::class);
+        return $this->crmGroupRest;
     }
 
 }

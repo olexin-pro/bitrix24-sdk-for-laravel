@@ -10,12 +10,21 @@ use OlexinPro\Bitrix24\API\Batch\Batch;
 use OlexinPro\Bitrix24\API\Batch\BatchCommandCollection;
 use OlexinPro\Bitrix24\API\Client;
 use OlexinPro\Bitrix24\Console\Commands\LoadOfflineEventsFromBitrix24;
-use OlexinPro\Bitrix24\Contracts\CrmGroupRest;
+use OlexinPro\Bitrix24\Contracts\CrmGroupInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\Bitrix24OAuthServiceInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\DealInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\LeadInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\OfferInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\UserInterface;
 use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 use OlexinPro\Bitrix24\Repositories\OAuthTokenRepository;
-use OlexinPro\Bitrix24\Repositories\Rest;
+use OlexinPro\Bitrix24\Repositories\Rest\CrmGroupRest;
+use OlexinPro\Bitrix24\Repositories\Rest\Deal;
+use OlexinPro\Bitrix24\Repositories\Rest\Lead;
+use OlexinPro\Bitrix24\Repositories\Rest\Notify;
+use OlexinPro\Bitrix24\Repositories\Rest\Offer;
+use OlexinPro\Bitrix24\Repositories\Rest\User as RestUser;
 use OlexinPro\Bitrix24\Services\Bitrix24OAuthService;
 
 class Bitrix24ServiceProvider extends ServiceProvider
@@ -47,13 +56,12 @@ class Bitrix24ServiceProvider extends ServiceProvider
 
     private function bindClasses(): void
     {
-        $this->app->bind(NotificationInterface::class, Rest\Notify::class);
-        $this->app->bind(UserInterface::class, Rest\User::class);
-        $this->app->bind(CrmGroupRest::class, CrmGroupRest::class);
+        $this->app->bind(NotificationInterface::class, Notify::class);
+        $this->app->bind(UserInterface::class, RestUser::class);
         $this->app->bind(TokenStorageInterface::class, OAuthTokenRepository::class);
 
 
-        $this->app->singleton(Bitrix24OAuthService::class, function ($app) {
+        $this->app->singleton(Bitrix24OAuthServiceInterface::class, function ($app) {
             return new Bitrix24OAuthService(
                 $app->make(TokenStorageInterface::class)
             );
@@ -68,14 +76,34 @@ class Bitrix24ServiceProvider extends ServiceProvider
         $this->app->alias('bitrix24.batch', Batch::class);
 
         $this->app->bind('bitrix24.client', function ($app) {
-            return new Bitrix24Client();
+            return new Bitrix24Client(
+                $app->make(Bitrix24OAuthServiceInterface::class),
+            );
         });
         $this->app->alias('bitrix24.client', Bitrix24Client::class);
 
+
+        $this->app->bind(CrmGroupInterface::class, function ($app) {
+            return new CrmGroupRest(
+                $app->make(LeadInterface::class),
+                $app->make(DealInterface::class),
+                $app->make(OfferInterface::class),
+            );
+        });
+
         $this->app->bind('bitrix24.rest', function ($app) {
-            return new Bitrix24RestFactory();
+            return new Bitrix24RestFactory(
+                $app->make(NotificationInterface::class),
+                $app->make(UserInterface::class),
+                $app->make(CrmGroupInterface::class)
+            );
         });
         $this->app->alias('bitrix24.rest', Bitrix24RestFactory::class);
+
+
+        $this->app->bind(LeadInterface::class, Lead::class);
+        $this->app->bind(DealInterface::class, Deal::class);
+        $this->app->bind(OfferInterface::class, Offer::class);
     }
 
     private function bootCommands(): void
@@ -89,8 +117,8 @@ class Bitrix24ServiceProvider extends ServiceProvider
 
     private function macrosAndMixins(): void
     {
-        Http::macro('bitrix24', function () {
-            $bitrix24client = new Bitrix24Client();
+        $bitrix24client = $this->app->make(Bitrix24Client::class);
+        Http::macro('bitrix24', function () use ($bitrix24client) {
             return $bitrix24client->getHttp();
         });
     }

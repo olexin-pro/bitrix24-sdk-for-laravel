@@ -5,24 +5,34 @@ declare(strict_types=1);
 namespace OlexinPro\Bitrix24\Repositories\Rest;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Http\Client\Response;
 use OlexinPro\Bitrix24\API\ApiRequest;
 use OlexinPro\Bitrix24\Bitrix24Client;
 
 abstract class BaseRest
 {
-    public function request(string $method, array $params = []): Response
+    public function request(string $method, array $params = []): array
     {
         $request = ApiRequest::post($method)
             ->setBody($params);
 
-        return $this->send($request);
+        $response = $this->send($request);
+
+        return $response['result'];
     }
 
+    /**
+     * @throws BindingResolutionException
+     * @throws \Exception
+     */
     protected function send(ApiRequest $request)
     {
         $client = $this->getClient();
-        return $client->send($request);
+        $resp = $client->send($request);
+        $data = $resp->json();
+        if ($resp->failed() || array_key_exists('error', $data)) {
+            throw new \Exception($data['error']);
+        }
+        return $data;
     }
 
     /**

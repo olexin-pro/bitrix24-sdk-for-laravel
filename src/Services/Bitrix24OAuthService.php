@@ -9,12 +9,13 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use OlexinPro\Bitrix24\Contracts\Rest\Bitrix24OAuthServiceInterface;
 use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 use OlexinPro\Bitrix24\Exceptions\MissingAuthCodeException;
 use OlexinPro\Bitrix24\Exceptions\TokenRefreshException;
 
 
-class Bitrix24OAuthService
+class Bitrix24OAuthService implements Bitrix24OAuthServiceInterface
 {
     private string $clientId;
     private string $clientSecret;
@@ -100,7 +101,7 @@ class Bitrix24OAuthService
      * @param DateTimeInterface $expiresAt
      * @return bool
      */
-    private function isTokenExpired(DateTimeInterface $expiresAt): bool
+    public function isTokenExpired(DateTimeInterface $expiresAt): bool
     {
         return now()->greaterThanOrEqualTo($expiresAt);
     }

@@ -6,5 +6,5 @@ namespace OlexinPro\Bitrix24\Contracts;
 
 interface CrmFactoryInterface
 {
-    public function crm(): CrmGroupRest;
+    public function crm(): CrmGroupInterface;
 }
