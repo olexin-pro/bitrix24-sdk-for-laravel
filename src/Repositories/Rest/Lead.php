@@ -11,6 +11,12 @@ use OlexinPro\Bitrix24\Enums\Rest\LeadApiMethod;
 
 class Lead extends BaseRest implements LeadInterface
 {
+    public function __construct(
+        protected ?string $defaultEntityClass = null
+    )
+    {
+        $this->defaultEntityClass = config('bitrix24.default_entity_class.lead', LeadEntity::class);
+    }
 
     public function add(array $fields)
     {
@@ -22,15 +28,17 @@ class Lead extends BaseRest implements LeadInterface
         // TODO: Implement update() method.
     }
 
-    public function get(int $id)
+    public function get(int $id): array
     {
-        // TODO: Implement get() method.
+        return $this->request(LeadApiMethod::GET->value, [
+            'id' => $id
+        ]);
     }
 
     /**
-     * @return Collection<LeadEntity>
+     * @return array<int, array>
      */
-    public function list(?array $select = [], ?array $filter = [], ?array $order = [], ?int $start = 0): Collection
+    public function list(?array $select = [], ?array $filter = [], ?array $order = [], ?int $start = 0): array
     {
         $data = $this->request(LeadApiMethod::LIST->value, [
             'select' => $select,
@@ -39,9 +47,7 @@ class Lead extends BaseRest implements LeadInterface
             'start' => $start
         ]);
 
-        return collect($data)->map(function ($item) {
-            return new LeadEntity($item);
-        });
+        return $data;
     }
 
     public function delete(int $id)

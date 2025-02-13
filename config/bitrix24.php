@@ -18,8 +18,11 @@ return [
     ],
     'routes' => [
         'event_webhook_path' => '/event/webhook',
-        'oauth_install_token' => env('BITRIX24_OAUTH_INSTALL_TOKEN', 'oauth/install'),
+        'oauth_install_token' => env('BITRIX24_OAUTH_INSTALL_TOKEN', 'api/bitrix24/handler'),
         'oauth_redirect_to_bitrix24' => env('BITRIX24_OAUTH_REDIRECT', 'oauth/authorize'),
         'event_webhook_middleware' => []
-    ]
+    ],
+    'default_entity_class' => [
+        'lead' => \OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity::class
+    ],
 ];

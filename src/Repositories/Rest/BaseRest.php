@@ -7,9 +7,12 @@ namespace OlexinPro\Bitrix24\Repositories\Rest;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use OlexinPro\Bitrix24\API\ApiRequest;
 use OlexinPro\Bitrix24\Bitrix24Client;
+use OlexinPro\Bitrix24\Entities\DTO\AbstractBitrix24DTO;
 
 abstract class BaseRest
 {
+    use AsCollectionEntityTrait;
+
     public function request(string $method, array $params = []): array
     {
         $request = ApiRequest::post($method)

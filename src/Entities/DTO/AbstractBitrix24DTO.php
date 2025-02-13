@@ -17,10 +17,10 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 
-abstract class AbstractBitrix24DTO
+abstract class AbstractBitrix24DTO implements Bitrix24DTOInterface
 {
-    protected array $data;
-    protected array $converters = [];
+    protected readonly array $data;
+    private static array $converters = [];
     private static array $reflectionCache = [];
 
     public function __construct(array $data)
@@ -101,8 +101,8 @@ abstract class AbstractBitrix24DTO
     private function getConverterFromEnum(Bitrix24TypeEnum $type): Bitrix24TypeConverterInterface
     {
 
-        if (!isset($this->converters[$type->value])) {
-            $this->converters[$type->value] = match ($type) {
+        if (!isset(self::$converters[$type->value])) {
+            self::$converters[$type->value] = match ($type) {
                 Bitrix24TypeEnum::ARRAY => new ArrayConverter(),
                 Bitrix24TypeEnum::COLLECTION => new CollectionConverter(),
                 Bitrix24TypeEnum::INT => new IntConverter(),
@@ -114,7 +114,7 @@ abstract class AbstractBitrix24DTO
                 default => new DynamicConverter(),
             };
         }
-        return $this->converters[$type->value];
+        return self::$converters[$type->value];
     }
 
     private function getReflection(): ReflectionClass
