@@ -12,4 +12,6 @@ enum DealApiMethod: string
     case UPDATE = 'crm.deal.update';
     case DELETE = 'crm.deal.delete';
     case FIELDS = 'crm.deal.fields';
+    case PRODUCT_ROWS_SET = 'crm.deal.productrows.set';
+    case PRODUCT_ROWS_GET = 'crm.deal.productrows.get';
 }

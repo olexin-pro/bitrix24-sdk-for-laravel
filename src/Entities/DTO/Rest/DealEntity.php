@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Entities\DTO\Rest;
 
-use OlexinPro\Bitrix24\Entities\DTO\{
-    AbstractBitrix24DTO,
+use OlexinPro\Bitrix24\Entities\DTO\{AbstractBitrix24DTO,
     Bitrix24Field,
-    Bitrix24TypeEnum
-};
+    Bitrix24TypeEnum,
+    Converters\CrmProductRowConverter};
 use DateTimeInterface;
+use Illuminate\Support\Collection;
 
 final class DealEntity extends AbstractBitrix24DTO
 {
+
     #[Bitrix24Field('ID', Bitrix24TypeEnum::INT, true)]
     public int $id;
 
@@ -111,4 +112,7 @@ final class DealEntity extends AbstractBitrix24DTO
 
     #[Bitrix24Field('TRACE', Bitrix24TypeEnum::STRING)]
     public ?string $trace;
+
+    #[Bitrix24Field(self::PRODUCT_ROWS_KEY, CrmProductRowConverter::class)]
+    public ?Collection $products;
 }

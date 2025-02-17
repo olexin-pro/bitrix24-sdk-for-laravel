@@ -4,48 +4,94 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Repositories\Rest;
 
+use OlexinPro\Bitrix24\API\Batch\Requests\BatchDealRequest;
 use OlexinPro\Bitrix24\Contracts\Rest\DealInterface;
+use OlexinPro\Bitrix24\Entities\DTO\AbstractBitrix24DTO;
+use OlexinPro\Bitrix24\Entities\DTO\Rest\DealEntity;
+use OlexinPro\Bitrix24\Enums\Rest\DealApiMethod;
 
 class Deal extends BaseRest implements DealInterface
 {
-
-    public function add(array $fields)
+    public function __construct()
     {
-        // TODO: Implement add() method.
+        $this->defaultEntityClass = config('bitrix24.default_entity_class.deal', DealEntity::class);
     }
 
-    public function update(int $id, array $fields)
+    public function add(array $fields): array
     {
-        // TODO: Implement update() method.
+        return $this->request(DealApiMethod::ADD->value, [
+            'fields' => $fields,
+        ]);
     }
 
-    public function get(int $id)
+    public function update(int $id, array $fields): array
     {
-        // TODO: Implement get() method.
+        return $this->request(DealApiMethod::UPDATE->value, [
+            'id' => $id,
+            'fields' => $fields,
+        ]);
     }
 
-    public function list(?array $select = [], ?array $filter = [], ?array $order = [], ?int $start = 0)
+    public function get(int $id): array
     {
-        // TODO: Implement list() method.
+        return $this->request(DealApiMethod::GET->value, [
+            'id' => $id
+        ]);
     }
 
-    public function delete(int $id)
+    /**
+     */
+    public function getWithProducts(int $id): array
     {
-        // TODO: Implement delete() method.
+        $data = $this->batch([
+            'deal_data' => (new BatchDealRequest())->get($id),
+            AbstractBitrix24DTO::PRODUCT_ROWS_KEY => (new BatchDealRequest())->productRowsGet($id)
+        ]);
+
+        $lead = $data['result']['deal_data'];
+        $lead[AbstractBitrix24DTO::PRODUCT_ROWS_KEY] = $data['result'][AbstractBitrix24DTO::PRODUCT_ROWS_KEY];
+
+        unset($data);
+        return $lead;
     }
 
-    public function fields()
+    /**
+     * @return array<int, array>
+     */
+    public function list(?array $select = [], ?array $filter = [], ?array $order = [], ?int $start = 0): array
     {
-        // TODO: Implement fields() method.
+        return $this->request(DealApiMethod::LIST->value, [
+            'select' => $select,
+            'filter' => $filter,
+            'order' => $order,
+            'start' => $start
+        ]);
     }
 
-    public function productRowsSet(int $id, array $products)
+    public function delete(int $id): array
     {
-        // TODO: Implement productRowsSet() method.
+        return $this->request(DealApiMethod::DELETE->value, [
+            'id' => $id,
+        ]);
     }
 
-    public function productRowsGet(int $id)
+    public function fields(): array
     {
-        // TODO: Implement productRowsGet() method.
+        return $this->request(DealApiMethod::FIELDS->value);
+    }
+
+    public function productRowsSet(int $id, array $products): array
+    {
+        return $this->request(DealApiMethod::PRODUCT_ROWS_SET->value, [
+            'id' => $id,
+            'products' => $products,
+        ]);
+    }
+
+    public function productRowsGet(int $id): array
+    {
+        return $this->request(DealApiMethod::PRODUCT_ROWS_GET->value, [
+            'id' => $id,
+        ]);
     }
 }

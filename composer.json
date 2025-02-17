@@ -24,7 +24,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "OlexinPro\\Bitrix24\\Bitrix24ServiceProvider"
+                "OlexinPro\\Bitrix24\\Bitrix24ServiceProvider",
+                "OlexinPro\\Bitrix24\\DTOGeneratorServiceProvider"
             ],
             "aliases": {
                 "Bitrix24Batch": "OlexinPro\\Bitrix24\\Facades\\Bitrix24Batch",

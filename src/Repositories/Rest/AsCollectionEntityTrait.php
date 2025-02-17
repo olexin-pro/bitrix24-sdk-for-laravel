@@ -92,6 +92,14 @@ trait AsCollectionEntityTrait
      */
     private function convertToEntity(array $data): Bitrix24DTOInterface|array
     {
+        dd(
+            $this->defaultEntityClass,
+            \App\DTO\Bitrix24\DealDto::class,
+            class_exists($this->defaultEntityClass),
+            is_subclass_of($this->defaultEntityClass, Bitrix24DTOInterface::class),
+            //$entityDTO = new $this->defaultEntityClass($data),
+            //is_subclass_of($entityDTO, Bitrix24DTOInterface::class),
+        );
         if (!is_subclass_of($this->defaultEntityClass, Bitrix24DTOInterface::class)) {
             return $data;
         }

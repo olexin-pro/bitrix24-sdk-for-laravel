@@ -25,6 +25,9 @@ abstract class BaseRest implements AsCollectionEntityInterface
         return $response['result'];
     }
 
+    /**
+     * @throws BindingResolutionException
+     */
     public function batch(array $requests): array
     {
         $response = $this->sendBatch($requests);

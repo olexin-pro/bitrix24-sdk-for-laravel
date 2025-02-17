@@ -6,6 +6,7 @@ namespace OlexinPro\Bitrix24\Repositories\Rest;
 
 use OlexinPro\Bitrix24\API\Batch\Requests\BatchLeadRequest;
 use OlexinPro\Bitrix24\Contracts\Rest\LeadInterface;
+use OlexinPro\Bitrix24\Entities\DTO\AbstractBitrix24DTO;
 use OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity;
 use OlexinPro\Bitrix24\Enums\Rest\LeadApiMethod;
 
@@ -44,11 +45,11 @@ class Lead extends BaseRest implements LeadInterface
     {
         $data = $this->batch([
             'lead_data' => (new BatchLeadRequest())->get($id),
-            LeadEntity::PRODUCT_ROWS_KEY => (new BatchLeadRequest())->productRowsGet($id)
+            AbstractBitrix24DTO::PRODUCT_ROWS_KEY => (new BatchLeadRequest())->productRowsGet($id)
         ]);
 
         $lead = $data['result']['lead_data'];
-        $lead[LeadEntity::PRODUCT_ROWS_KEY] = $data['result'][LeadEntity::PRODUCT_ROWS_KEY];
+        $lead[AbstractBitrix24DTO::PRODUCT_ROWS_KEY] = $data['result'][AbstractBitrix24DTO::PRODUCT_ROWS_KEY];
 
         unset($data);
         return $lead;
@@ -81,7 +82,7 @@ class Lead extends BaseRest implements LeadInterface
 
     public function productRowsSet(int $id, array $products): array
     {
-        return $this->request(LeadApiMethod::LIST->value, [
+        return $this->request(LeadApiMethod::PRODUCT_ROWS_SET->value, [
             'id' => $id,
             'products' => $products,
         ]);

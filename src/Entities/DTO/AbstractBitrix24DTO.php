@@ -19,6 +19,8 @@ use ReflectionProperty;
 
 abstract class AbstractBitrix24DTO implements Bitrix24DTOInterface
 {
+    const PRODUCT_ROWS_KEY = 'PRODUCT_ROWS';
+
     protected readonly array $data;
     private static array $converters = [];
     private static array $reflectionCache = [];

@@ -1,5 +1,7 @@
 <?php
 
+use OlexinPro\Bitrix24\Entities\DTO\Bitrix24TypeEnum;
+
 return [
 
     'domain' => env('BITRIX24_DOMAIN'),
@@ -22,8 +24,85 @@ return [
         'oauth_redirect_to_bitrix24' => env('BITRIX24_OAUTH_REDIRECT', 'oauth/login'),
         'event_webhook_middleware' => []
     ],
-    'product_rows_key' => 'product_rows',
     'default_entity_class' => [
-        'lead' => \OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity::class
+        // 'lead' => \OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity::class,
+        'lead' => \App\DTO\Bitrix24\LeadDTO::class,
+        // 'deal' => \OlexinPro\Bitrix24\Entities\DTO\Rest\DealEntity::class,
+        'deal' => \App\DTO\Bitrix24\DealDto::class,
     ],
+
+    'generator' => [
+        'namespace' => 'App\\DTO\\Bitrix24',
+        'path' => app_path('DTO/Bitrix24'),
+        'stub_path' => __DIR__ . '/../stubs/bitrix24-dto.stub',
+        'type_mapping' => [
+
+            // Base
+            'date' => 'DATE',
+            'integer' => 'INT',
+            'float' => 'FLOAT',
+            'char' => 'BOOLEAN',
+            'double' => 'FLOAT',
+            'bool' => 'BOOLEAN',
+            'datetime' => 'DATE',
+            'boolean' => 'BOOLEAN',
+
+            // CRM
+            'crm' => 'STRING',
+            'crm_lead' => 'INT',
+            'crm_quote' => 'INT',
+            'crm_company' => 'INT',
+            'crm_contact' => 'INT',
+            'crm_status' => 'STRING',
+            'crm_entity' => 'STRING',
+            'crm_category' => 'STRING',
+            'crm_currency' => 'STRING',
+            'crm_multifield' => 'CRM_CONTACT_FIELD',
+
+            // Other
+            'user' => 'INT',
+            'url' => 'STRING',
+            'file' => 'ARRAY',
+            'money' => 'STRING',
+            'employee' => 'INT',
+            'location' => 'DYNAMIC',
+            'enumeration' => 'STRING',
+            'resourcebooking' => 'DYNAMIC',
+
+        ],
+        'match_php_types' => [
+
+            // Base
+            'bool' => 'bool',
+            'char' => 'bool',
+            'integer' => 'int',
+            'float' => 'float',
+            'boolean' => 'bool',
+            'double' => 'float',
+            'date' => '\DateTimeInterface',
+            'datetime' => '\DateTimeInterface',
+
+            // CRM
+            'crm' => 'string',
+            'crm_lead' => 'int',
+            'crm_quote' => 'int',
+            'crm_company' => 'int',
+            'crm_contact' => 'int',
+            'crm_entity' => 'string',
+            'crm_status' => 'string',
+            'crm_category' => 'string',
+            'crm_currency' => 'string',
+            'crm_multifield' => 'Collection',
+
+            // Other
+            'user' => 'int',
+            'url' => 'string',
+            'file' => 'array',
+            'employee' => 'int',
+            'money' => 'string',
+            'location' => 'mixed',
+            'enumeration' => 'string',
+            'resourcebooking' => 'mixed',
+        ]
+    ]
 ];

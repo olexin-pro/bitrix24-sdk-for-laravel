@@ -14,7 +14,6 @@ use Illuminate\Support\Collection;
 
 final class LeadEntity extends AbstractBitrix24DTO
 {
-    const PRODUCT_ROWS_KEY = 'PRODUCT_ROWS';
 
     #[Bitrix24Field('ID', Bitrix24TypeEnum::INT, true)]
     public int $id;
