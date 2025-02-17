@@ -26,8 +26,6 @@ use OlexinPro\Bitrix24\Repositories\Rest\Notify;
 use OlexinPro\Bitrix24\Repositories\Rest\Offer;
 use OlexinPro\Bitrix24\Repositories\Rest\User as RestUser;
 use OlexinPro\Bitrix24\Services\Bitrix24OAuthService;
-use OlexinPro\Bitrix24\Services\Generator\DTOGeneratorService;
-use OlexinPro\Bitrix24\Services\TypeMapper;
 
 class Bitrix24ServiceProvider extends ServiceProvider
 {
@@ -106,10 +104,6 @@ class Bitrix24ServiceProvider extends ServiceProvider
         $this->app->bind(LeadInterface::class, Lead::class);
         $this->app->bind(DealInterface::class, Deal::class);
         $this->app->bind(OfferInterface::class, Offer::class);
-
-
-        $this->app->singleton(DTOGeneratorService::class);
-        $this->app->singleton(TypeMapper::class);
     }
 
     private function bootCommands(): void
