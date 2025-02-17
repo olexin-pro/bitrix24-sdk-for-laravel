@@ -69,7 +69,7 @@ class Bitrix24ServiceProvider extends ServiceProvider
 
         $this->app->bind('bitrix24.batch', function ($app) {
             return new Batch(
-                $app->make(Client::class),
+                $app->make(Bitrix24Client::class),
                 $app->make(BatchCommandCollection::class),
             );
         });

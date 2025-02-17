@@ -54,7 +54,7 @@ class Bitrix24OAuthService implements Bitrix24OAuthServiceInterface
      *
      * @param string|null $refreshToken
      * @return array
-     * @throws TokenRefreshException
+     * @throws TokenRefreshException|ConnectionException
      */
     private function getToken(?string $refreshToken): array
     {
@@ -83,7 +83,7 @@ class Bitrix24OAuthService implements Bitrix24OAuthServiceInterface
         $data = $response->json();
 
         if ($response->failed() || array_key_exists('error', $data)) {
-            throw new TokenRefreshException("Failed to refresh token: {$data['error']}");
+            throw new TokenRefreshException("Failed to refresh token: " . $data['error'] ?? '');
         }
 
         $this->tokenRepository->saveToken(
@@ -118,12 +118,11 @@ class Bitrix24OAuthService implements Bitrix24OAuthServiceInterface
     }
 
     /**
-     * @throws MissingAuthCodeException
+     * @throws MissingAuthCodeException|TokenRefreshException|ConnectionException
      */
     public function installToken(Request $request): string
     {
         if (!$request->has('code')) {
-            dd($request->all());
             throw new MissingAuthCodeException();
         }
 
@@ -131,7 +130,7 @@ class Bitrix24OAuthService implements Bitrix24OAuthServiceInterface
     }
 
     /**
-     * @throws Exception
+     * @throws TokenRefreshException|ConnectionException
      */
     private function authorizationCode(string $authCode)
     {
@@ -142,11 +141,12 @@ class Bitrix24OAuthService implements Bitrix24OAuthServiceInterface
             'code' => $authCode,
         ];
 
-        $response = Http::acceptJson()->get($this->tokenUrl, $params);
+        $response = Http::acceptJson()
+            ->get($this->tokenUrl, $params);
         $data = $response->json();
 
         if ($response->failed() || array_key_exists('error', $data)) {
-            throw new TokenRefreshException("Failed to refresh token: {$data['error']}: {$data['error_description']}");
+            throw new TokenRefreshException(sprintf("Failed to refresh token: %s %s", $data['error'], $data['error_description'] ?? ''));
         }
 
         $this->tokenRepository->saveToken(

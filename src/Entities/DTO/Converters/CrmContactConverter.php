@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Entities\DTO\Converters;
 
+use Illuminate\Support\Collection;
 use OlexinPro\Bitrix24\Entities\DTO\Fields\CrmContactField;
 
 final class CrmContactConverter implements Bitrix24TypeConverterInterface
@@ -11,7 +12,7 @@ final class CrmContactConverter implements Bitrix24TypeConverterInterface
     /**
      * @return array<CrmContactField>|null
      */
-    public function convert($value): null|array
+    public function convert($value): null|Collection
     {
         if(is_null($value)){
             return null;
@@ -27,10 +28,10 @@ final class CrmContactConverter implements Bitrix24TypeConverterInterface
                 return null;
             }
             return new CrmContactField($contactField);
-        })->filter()->toArray();
+        })->filter();
     }
 
-    private function transformKeys(array $data)
+    private function transformKeys(array $data): array
     {
         $transformed = [];
         foreach ($data as $key => $value) {

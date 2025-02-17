@@ -38,4 +38,14 @@ class Deal extends BaseRest implements DealInterface
     {
         // TODO: Implement fields() method.
     }
+
+    public function productRowsSet(int $id, array $products)
+    {
+        // TODO: Implement productRowsSet() method.
+    }
+
+    public function productRowsGet(int $id)
+    {
+        // TODO: Implement productRowsGet() method.
+    }
 }

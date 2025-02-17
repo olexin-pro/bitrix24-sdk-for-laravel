@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Repositories\Rest;
 
+use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use OlexinPro\Bitrix24\API\ApiRequest;
+use OlexinPro\Bitrix24\API\Batch\Batch;
 use OlexinPro\Bitrix24\Bitrix24Client;
-use OlexinPro\Bitrix24\Entities\DTO\AbstractBitrix24DTO;
+use OlexinPro\Bitrix24\Contracts\AsCollectionEntityInterface;
 
-abstract class BaseRest
+abstract class BaseRest implements AsCollectionEntityInterface
 {
     use AsCollectionEntityTrait;
 
@@ -23,9 +25,15 @@ abstract class BaseRest
         return $response['result'];
     }
 
+    public function batch(array $requests): array
+    {
+        $response = $this->sendBatch($requests);
+        return $response['result'];
+    }
+
     /**
      * @throws BindingResolutionException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function send(ApiRequest $request)
     {
@@ -33,7 +41,7 @@ abstract class BaseRest
         $resp = $client->send($request);
         $data = $resp->json();
         if ($resp->failed() || array_key_exists('error', $data)) {
-            throw new \Exception($data['error']);
+            throw new Exception($data['error']);
         }
         return $data;
     }
@@ -44,5 +52,31 @@ abstract class BaseRest
     private function getClient(): Bitrix24Client
     {
         return app()->make(Bitrix24Client::class);
+    }
+
+
+    /**
+     * @throws BindingResolutionException
+     * @throws Exception
+     */
+    protected function sendBatch(array $requests)
+    {
+        $client = $this->getBatch();
+        foreach ($requests as $id => $request){
+            $client->add($id, $request);
+        }
+        $resp = $client->execute();
+        $data = $resp->json();
+        if ($resp->failed() || array_key_exists('error', $data)) {
+            throw new Exception($data['error']);
+        }
+        return $data;
+    }
+    /**
+     * @throws BindingResolutionException
+     */
+    private function getBatch(): Batch
+    {
+        return app()->make(Batch::class);
     }
 }

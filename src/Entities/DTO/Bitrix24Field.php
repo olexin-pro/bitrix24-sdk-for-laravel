@@ -10,7 +10,7 @@ final class Bitrix24Field
 {
     public function __construct(
         public string $fieldName,
-        public Bitrix24TypeEnum|Bitrix24TypeConverterInterface $type = Bitrix24TypeEnum::DYNAMIC,
+        public Bitrix24TypeEnum|string $type = Bitrix24TypeEnum::DYNAMIC,
         public bool $required = false
     ) {}
 }

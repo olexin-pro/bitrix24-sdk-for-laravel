@@ -5,10 +5,17 @@ declare(strict_types=1);
 namespace OlexinPro\Bitrix24\Entities\DTO\Rest;
 
 use DateTimeInterface;
-use OlexinPro\Bitrix24\Entities\DTO\{AbstractBitrix24DTO, Bitrix24Field, Bitrix24TypeEnum};
+use OlexinPro\Bitrix24\Entities\DTO\{AbstractBitrix24DTO,
+    Bitrix24Field,
+    Bitrix24TypeEnum,
+    Converters\CrmProductRowConverter,
+    Fields\CrmContactField};
+use Illuminate\Support\Collection;
 
 final class LeadEntity extends AbstractBitrix24DTO
 {
+    const PRODUCT_ROWS_KEY = 'PRODUCT_ROWS';
+
     #[Bitrix24Field('ID', Bitrix24TypeEnum::INT, true)]
     public int $id;
 
@@ -51,20 +58,35 @@ final class LeadEntity extends AbstractBitrix24DTO
     #[Bitrix24Field('POST', Bitrix24TypeEnum::STRING)]
     public ?string $post;
 
+    /**
+     * @var Collection<CrmContactField>|null $phone
+     */
     #[Bitrix24Field('PHONE', Bitrix24TypeEnum::CRM_CONTACT_FIELD)]
-    public ?array $phone;
+    public ?Collection $phone;
 
+    /**
+     * @var Collection<CrmContactField>|null $email
+     */
     #[Bitrix24Field('EMAIL', Bitrix24TypeEnum::CRM_CONTACT_FIELD)]
-    public ?array $email;
+    public ?Collection $email;
 
+    /**
+     * @var Collection<CrmContactField>|null $im
+     */
     #[Bitrix24Field('IM', Bitrix24TypeEnum::CRM_CONTACT_FIELD)]
-    public ?array $im;
+    public ?Collection $im;
 
+    /**
+     * @var Collection<CrmContactField>|null $link
+     */
     #[Bitrix24Field('LINK', Bitrix24TypeEnum::CRM_CONTACT_FIELD)]
-    public ?array $link;
+    public ?Collection $link;
 
+    /**
+     * @var Collection<CrmContactField>|null $web
+     */
     #[Bitrix24Field('WEB', Bitrix24TypeEnum::CRM_CONTACT_FIELD)]
-    public ?array $web;
+    public ?Collection $web;
 
     #[Bitrix24Field('ADDRESS', Bitrix24TypeEnum::STRING)]
     public ?string $address;
@@ -134,4 +156,7 @@ final class LeadEntity extends AbstractBitrix24DTO
 
     #[Bitrix24Field('UTM_TERM', Bitrix24TypeEnum::STRING)]
     public ?string $utmTerm;
+
+    #[Bitrix24Field(self::PRODUCT_ROWS_KEY, CrmProductRowConverter::class)]
+    public ?Collection $products;
 }

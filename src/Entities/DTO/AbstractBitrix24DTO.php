@@ -75,10 +75,10 @@ abstract class AbstractBitrix24DTO implements Bitrix24DTOInterface
         return $this->data[$this->normalizeKey($attribute->fieldName)] ?? null;
     }
 
-    private function resolveConverter(Bitrix24TypeEnum|Bitrix24TypeConverterInterface $type): Bitrix24TypeConverterInterface
+    private function resolveConverter(Bitrix24TypeEnum|string $type): Bitrix24TypeConverterInterface
     {
         return match (true) {
-            $type instanceof Bitrix24TypeConverterInterface => $type,
+            is_subclass_of($type, Bitrix24TypeConverterInterface::class) => new $type(),
             default => $this->getConverterFromEnum($type)
         };
     }
