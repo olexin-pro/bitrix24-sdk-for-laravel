@@ -5,24 +5,48 @@ declare(strict_types=1);
 namespace OlexinPro\Bitrix24\Repositories\Rest;
 
 use Exception;
+use Generator;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Http\Client\Response;
 use OlexinPro\Bitrix24\API\ApiRequest;
 use OlexinPro\Bitrix24\API\Batch\Batch;
 use OlexinPro\Bitrix24\Bitrix24Client;
 use OlexinPro\Bitrix24\Contracts\AsCollectionEntityInterface;
+use OlexinPro\Bitrix24\Exceptions\Bitrix24APIException;
 
 abstract class BaseRest implements AsCollectionEntityInterface
 {
     use AsCollectionEntityTrait;
 
+    protected Response $lastResponse;
+
+
+    public function getLastResponse(): Response
+    {
+        return $this->lastResponse;
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws Bitrix24APIException
+     */
     public function request(string $method, array $params = []): array
     {
         $request = ApiRequest::post($method)
             ->setBody($params);
 
-        $response = $this->send($request);
+        $this->lastResponse = $this->send($request);
+        $data = $this->lastResponse->json();
 
-        return $response['result'];
+
+        if ($this->lastResponse->failed() || array_key_exists('error', $data)) {
+            $jsonResponse = json_encode($data);
+            $jsonParams = json_encode($params);
+
+            throw new Bitrix24APIException("Ошибка при запросе '{$method}' ({$jsonParams}): {$jsonResponse}");
+        }
+
+        return $this->lastResponse['result'];
     }
 
     /**
@@ -41,12 +65,7 @@ abstract class BaseRest implements AsCollectionEntityInterface
     protected function send(ApiRequest $request)
     {
         $client = $this->getClient();
-        $resp = $client->send($request);
-        $data = $resp->json();
-        if ($resp->failed() || array_key_exists('error', $data)) {
-            throw new Exception($data['error']);
-        }
-        return $data;
+        return $client->send($request);
     }
 
     /**
@@ -65,7 +84,7 @@ abstract class BaseRest implements AsCollectionEntityInterface
     protected function sendBatch(array $requests)
     {
         $client = $this->getBatch();
-        foreach ($requests as $id => $request){
+        foreach ($requests as $id => $request) {
             $client->add($id, $request);
         }
         $resp = $client->execute();
@@ -75,6 +94,7 @@ abstract class BaseRest implements AsCollectionEntityInterface
         }
         return $data;
     }
+
     /**
      * @throws BindingResolutionException
      */
@@ -82,4 +102,69 @@ abstract class BaseRest implements AsCollectionEntityInterface
     {
         return app()->make(Batch::class);
     }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws Bitrix24APIException
+     */
+    public function fetchList(string $method, array $params = [], string $idField = 'ID'): Generator
+    {
+        $params['order'][$idField] = 'ASC';
+        $params['filter'][">$idField"] = 0;
+        $params['start'] = -1;
+
+        $totalCounter = 0;
+
+        do {
+            $result = $this->request($method, $params);
+
+            $resultCounter = count($result);
+            $totalCounter += $resultCounter;
+
+            logger()->debug(
+                "По запросу (fetchList) {$method} получено сущностей: {$resultCounter}, " .
+                "всего получено: {$totalCounter}"
+            );
+
+            foreach ($result as $item) {
+                yield $item;
+            }
+
+            if ($resultCounter < 50) {
+                break;
+            }
+
+            $params['filter'][">$idField"] = $result[$resultCounter - 1][$idField];
+        } while (true);
+    }
+
+    /**
+     * @throws BindingResolutionException
+     * @throws Bitrix24APIException
+     */
+    public function getList(string $method, array $params = []): Generator
+    {
+        do {
+            $result = $this->request($method, $params);
+            $start = $params['start'] ?? 0;
+
+            $lastResponse = $this->lastResponse->json();
+
+            logger()->debug(
+                "По запросу (getList) {$method} (start: {$start}) получено сущностей: "
+                . count($result)
+                . ", всего получено: {$lastResponse['total']}"
+            );
+
+            foreach ($result as $item) {
+                yield $item;
+            }
+
+            if (empty($lastResponse['next'])) {
+                break;
+            }
+            $params['start'] = $lastResponse['next'];
+        } while (true);
+    }
+
 }

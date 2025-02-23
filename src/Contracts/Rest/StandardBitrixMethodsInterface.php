@@ -11,10 +11,7 @@ interface StandardBitrixMethodsInterface
 
     public function get(int $id);
 
-    /**
-     * @return array
-     */
-    public function list(?array $select = [], ?array $filter = [], ?array $order = [], ?int $start = 0);
+    public function list(?array $select = [], ?array $filter = [], ?array $order = []);
 
     public function delete(int $id);
 

@@ -14,7 +14,7 @@ class LoadOfflineEventsFromBitrix24 extends Command
      *
      * @var string
      */
-    protected $signature = 'bitrix:load-offline-events {--C|clear: Clear events after load}';
+    protected $signature = 'bitrix24:load-offline-events {--C|clear: Clear events after load}';
 
     /**
      * The console command description.

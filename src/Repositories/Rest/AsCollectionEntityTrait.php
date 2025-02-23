@@ -2,10 +2,10 @@
 
 namespace OlexinPro\Bitrix24\Repositories\Rest;
 
+use Generator;
 use Illuminate\Support\Collection;
 use OlexinPro\Bitrix24\Entities\DTO\Bitrix24DTOInterface;
 use OlexinPro\Bitrix24\Entities\DTO\Bitrix24FieldDescriptionDTO;
-use OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity;
 
 /**
  * @requires method list
@@ -21,17 +21,32 @@ trait AsCollectionEntityTrait
     /**
      * @return Collection<Bitrix24DTOInterface|array>
      */
-    public function listAsCollection(): Collection
+    public function listAsEntity(): Generator
     {
         $method = 'list';
         $this->ensureMethodExists($method);
 
-        $data = $this->{$method}(...func_get_args());
-        $data = collect($data);
+        $generator = $this->{$method}(...func_get_args());
 
-        return $data->map(function ($item) {
-            return $this->convertToEntity($item);
-        });
+        foreach ($generator as $item) {
+            yield $this->convertToEntity($item);
+        }
+    }
+
+
+    /**
+     * @return Generator<Bitrix24DTOInterface|array>
+     */
+    public function listEagerAsEntity(): Generator
+    {
+        $method = 'listEager';
+        $this->ensureMethodExists($method);
+
+        $generator = $this->{$method}(...func_get_args());
+
+        foreach ($generator as $item) {
+            yield $this->convertToEntity($item);
+        }
     }
 
 
@@ -95,6 +110,7 @@ trait AsCollectionEntityTrait
         if (!is_subclass_of($this->defaultEntityClass, Bitrix24DTOInterface::class)) {
             return $data;
         }
+
 
         return new $this->defaultEntityClass($data);
     }
