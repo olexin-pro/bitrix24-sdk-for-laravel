@@ -1,7 +1,5 @@
 <?php
 
-use OlexinPro\Bitrix24\Entities\DTO\Bitrix24TypeEnum;
-
 return [
 
     'domain' => env('BITRIX24_DOMAIN'),
@@ -25,10 +23,15 @@ return [
         'event_webhook_middleware' => []
     ],
     'default_entity_class' => [
+        // package
         // 'lead' => \OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity::class,
-        'lead' => \App\DTO\Bitrix24\LeadDTO::class,
         // 'deal' => \OlexinPro\Bitrix24\Entities\DTO\Rest\DealEntity::class,
+        //'offer' => \OlexinPro\Bitrix24\Entities\DTO\Rest\OfferEntity::class,
+
+        // app
+        'lead' => \App\DTO\Bitrix24\LeadDTO::class,
         'deal' => \App\DTO\Bitrix24\DealDto::class,
+        'offer' => \App\DTO\Bitrix24\OfferDTO::class,
     ],
 
     'generator' => [

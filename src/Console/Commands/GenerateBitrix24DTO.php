@@ -17,7 +17,7 @@ class GenerateBitrix24DTO extends Command
      *
      * @var string
      */
-    protected $signature = 'bitrix24:dto 
+    protected $signature = 'bitrix24:dto
                           {entity : The Bitrix24 entity name }
                           {class-name? : The name of the DTO class}
                           {--force : Force the operation to run when DTO already exists}
@@ -74,6 +74,7 @@ class GenerateBitrix24DTO extends Command
         return match ($entity){
             'lead' => Bitrix24Rest::crm()->lead()->fieldsCollection(),
             'deal' => Bitrix24Rest::crm()->deal()->fieldsCollection(),
+            'offer' => Bitrix24Rest::crm()->offer()->fieldsCollection(),
             default => throw new \InvalidArgumentException("Entity \"$entity\" is not support ")
         };
     }
