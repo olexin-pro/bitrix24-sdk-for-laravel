@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace OlexinPro\Bitrix24\Entities\DTO\Rest;
 
+use Illuminate\Support\Collection;
 use OlexinPro\Bitrix24\Entities\DTO\AbstractBitrix24DTO;
 use OlexinPro\Bitrix24\Entities\DTO\Bitrix24Field;
 use OlexinPro\Bitrix24\Entities\DTO\Bitrix24TypeEnum;
+use OlexinPro\Bitrix24\Entities\DTO\Converters\CrmProductRowConverter;
 
 final class OfferEntity extends AbstractBitrix24DTO
 {
@@ -136,4 +138,10 @@ final class OfferEntity extends AbstractBitrix24DTO
 
     #[Bitrix24Field('LAST_ACTIVITY_BY', Bitrix24TypeEnum::INT, false)]
     public ?int $lastActivityBy;
+
+    /**
+     * @var Collection<CrmProductEntity>|null
+     */
+    #[Bitrix24Field(self::PRODUCT_ROWS_KEY, CrmProductRowConverter::class)]
+    public ?Collection $products;
 }

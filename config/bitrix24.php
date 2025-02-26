@@ -41,6 +41,7 @@ return [
         'type_mapping' => [
 
             // Base
+            'string' => 'STRING',
             'date' => 'DATE',
             'integer' => 'INT',
             'float' => 'FLOAT',
@@ -76,6 +77,7 @@ return [
         'match_php_types' => [
 
             // Base
+            'string' => 'string',
             'bool' => 'bool',
             'char' => 'bool',
             'integer' => 'int',

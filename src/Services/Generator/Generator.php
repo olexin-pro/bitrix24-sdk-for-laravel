@@ -67,7 +67,7 @@ final readonly class Generator implements GeneratorInterface
             $attribute = $this->generateAttribute($field);
 
             return <<<PHP
-    
+
     {$attribute}
     public {$type} \${$propertyName};
 PHP;
@@ -75,7 +75,10 @@ PHP;
         if ($withProducts) {
             $properties->push(
                 <<<PHP
-    
+
+    /**
+     * @var Collection<\OlexinPro\Bitrix24\Entities\DTO\Rest\CrmProductEntity>|null
+     */
     #[Bitrix24Field(self::PRODUCT_ROWS_KEY, CrmProductRowConverter::class)]
     public ?Collection \$products;
 PHP
