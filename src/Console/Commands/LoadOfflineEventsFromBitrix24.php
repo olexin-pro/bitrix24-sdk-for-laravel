@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OlexinPro\Bitrix24\Console\Commands;
 
 use Illuminate\Console\Command;
+use OlexinPro\Bitrix24\Facades\Bitrix24Rest;
 use OlexinPro\Bitrix24\Services\Bitrix24EventService;
 
 class LoadOfflineEventsFromBitrix24 extends Command
@@ -14,23 +15,23 @@ class LoadOfflineEventsFromBitrix24 extends Command
      *
      * @var string
      */
-    protected $signature = 'bitrix24:load-offline-events {--C|clear: Clear events after load}';
+    protected $signature = 'bitrix24:load-offline-events';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Load offline events from bitrix24';
+    protected $description = 'Load offline events from bitrix24 and dispatch Laravel events based on them';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $bitrixEvents = Bitrix24RestApi::events();
+        $bitrixEvents = Bitrix24Rest::events();
         $bitrixEventService = new Bitrix24EventService();
-        $events = $bitrixEvents->getOfflineEventsCollection(clear: true);
+        $events = $bitrixEvents->offlineGetAsCollection(clear: true);
 
         if (blank($events)) {
             $this->line('No events found.');

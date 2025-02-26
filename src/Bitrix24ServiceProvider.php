@@ -13,6 +13,7 @@ use OlexinPro\Bitrix24\Console\Commands\LoadOfflineEventsFromBitrix24;
 use OlexinPro\Bitrix24\Contracts\CrmGroupInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\Bitrix24OAuthServiceInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\DealInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\EventsInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\LeadInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\NotificationInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\OfferInterface;
@@ -21,6 +22,7 @@ use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 use OlexinPro\Bitrix24\Repositories\OAuthTokenRepository;
 use OlexinPro\Bitrix24\Repositories\Rest\CrmGroupRest;
 use OlexinPro\Bitrix24\Repositories\Rest\Deal;
+use OlexinPro\Bitrix24\Repositories\Rest\Events;
 use OlexinPro\Bitrix24\Repositories\Rest\Lead;
 use OlexinPro\Bitrix24\Repositories\Rest\Notify;
 use OlexinPro\Bitrix24\Repositories\Rest\Offer;
@@ -95,7 +97,8 @@ class Bitrix24ServiceProvider extends ServiceProvider
             return new Bitrix24RestFactory(
                 $app->make(NotificationInterface::class),
                 $app->make(UserInterface::class),
-                $app->make(CrmGroupInterface::class)
+                $app->make(CrmGroupInterface::class),
+                $app->make(EventsInterface::class)
             );
         });
         $this->app->alias('bitrix24.rest', Bitrix24RestFactory::class);
@@ -104,6 +107,7 @@ class Bitrix24ServiceProvider extends ServiceProvider
         $this->app->bind(LeadInterface::class, Lead::class);
         $this->app->bind(DealInterface::class, Deal::class);
         $this->app->bind(OfferInterface::class, Offer::class);
+        $this->app->bind(EventsInterface::class, Events::class);
     }
 
     private function bootCommands(): void

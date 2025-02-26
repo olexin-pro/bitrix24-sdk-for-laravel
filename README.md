@@ -39,7 +39,7 @@ return [
 ];
 ```
 
-Make sure to add these values to your .env file:
+### Make sure to add these values to your .env file:
 
 ```dotenv
 BITRIX24_DOMAIN=https://portal.bitrix24.kz
@@ -48,7 +48,7 @@ BITRIX24_CLIENT_SECRET=your-client-secret
 BITRIX24_REDIRECT_URI=your-redirect-uri
 ```
 
-Свободное использование с помощью Http клиента:
+### Свободное использование с помощью Http клиента:
 
 ```php
 $resp = \Http::bitrix24()->get('/user.current')->json();
@@ -120,6 +120,143 @@ array:[
     ]
 ]
 */
+```
+
+### Генерация DTO на основание полей из Битрикс24
+
+```shell
+php artisan bitrix24:dto deal --with-products --force
+```
+
+Будет создано ДТО:
+
+```php
+declare(strict_types=1);
+
+namespace App\DTO\Bitrix24; // can be changed in config
+
+// imports: use ...
+
+final class DealDTO extends AbstractBitrix24DTO
+{
+    #[Bitrix24Field('ID', Bitrix24TypeEnum::INT, false)]
+    public int $id;
+    
+    // Standard fields....
+    
+    #[Bitrix24Field('UF_CRM_66B9CF21B5F8B', Bitrix24TypeEnum::ARRAY, false)]
+    public ?array $ufCrm66b9cf21b5f8b;
+    
+    // users fields....
+    
+    /**
+     * @var Collection<\OlexinPro\Bitrix24\Entities\DTO\Rest\CrmProductEntity>|null
+     */
+    #[Bitrix24Field(self::PRODUCT_ROWS_KEY, CrmProductRowConverter::class)]
+    public ?Collection $products;
+}
+```
+
+Использование команды:
+
+`php bitrix24:dto [options] [--] <entity> [<class-name>]`
+
+Arguments:
+
+| **Name**   | **Description**           |
+|------------|---------------------------|
+| entity     | The Bitrix24 entity name  |
+| class-name | The name of the DTO class |
+
+Options:
+
+| **Name**        | **Description**                                    |
+|-----------------|----------------------------------------------------|
+| --force         | Force the operation to run when DTO already exists |
+| --with-products | Add products field to DTO                          |
+
+### Обработка событий
+
+Офлайн события можно прослушивать с помощью команды:
+
+```shell
+php artisan bitrix24:load-offline-events
+```
+
+Или к примеру получать офлайн события каждый час:
+
+```shell
+Schedule::command('bitrix24:load-offline-events')->hourly();
+```
+
+Будут загружены все офлайн события из Битрикс24 и запущены события Laravel, которые соответствуют имени события
+Битрикс24
+
+| **Bitrix24 Event**     | **Laravel Event**   |
+|------------------------|---------------------|
+| CATALOG.PRODUCT.ON.ADD | CatalogProductOnAdd |
+| ONCRMLEADADD           | OnCrmLeadAdd        |
+| ONCRMDYNAMICITEMADD    | OnCrmDynamicItemAdd |
+| ONCRMTYPEDELETE        | OnCrmTypeDelete     |
+
+В иницируемые Laravel события в конструктор передается dto объект с событием Bitrix24 `Bitrix24Event`,
+по этому все события Laravel должны реализовывать интерфейс `Bitrix24EventInterface`
+либо наследоваться от абстрактного класса `BaseBitrix24Event` который реализует этот интерфейс.
+
+```php
+namespace App\Events;
+
+use OlexinPro\Bitrix24\Entities\Bitrix24Event;
+use OlexinPro\Bitrix24\Contracts\Bitrix24EventInterface;
+// other imports...
+
+class OnCrmLeadDelete implements Bitrix24EventInterface
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * Create a new event instance.
+     *
+     * @return void
+     */
+    public function __construct(
+        public Bitrix24Event $bitrixEvent
+    ) {}
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn()
+    {
+        return new PrivateChannel('channel-name');
+    }
+
+    public function getBitrixEventDTO(): Bitrix24Event
+    {
+        return $this->bitrixEvent;
+    }
+}
+
+// OR
+
+use OlexinPro\Bitrix24\Laravel\Events\BaseBitrix24Event;
+
+class OnCrmLeadDelete extends BaseBitrix24Event
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn()
+    {
+        return new PrivateChannel('channel-name');
+    }
+}
 ```
 
 ## License
