@@ -1,5 +1,7 @@
 <?php
 
+use OlexinPro\Bitrix24\Entities\DTO;
+
 return [
 
     'domain' => env('BITRIX24_DOMAIN'),
@@ -24,6 +26,7 @@ return [
     ],
     'default_entity_class' => [
         // package
+        'user' => DTO\Rest\UserEntity::class,
         // 'lead' => DTO\Rest\LeadEntity::class,
         // 'deal' => DTO\Rest\DealEntity::class,
         //'offer' => DTO\Rest\OfferEntity::class,
