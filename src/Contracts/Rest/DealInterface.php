@@ -3,7 +3,9 @@
 namespace OlexinPro\Bitrix24\Contracts\Rest;
 
 use OlexinPro\Bitrix24\Contracts\AsCollectionEntityInterface;
+use OlexinPro\Bitrix24\Contracts\AsCollectionProductsEntityInterface;
 
-interface DealInterface extends StandardBitrixMethodsInterface, AsCollectionEntityInterface, ProductRowsInterface
+interface DealInterface extends StandardBitrixMethodsInterface, AsCollectionEntityInterface,
+                                AsCollectionProductsEntityInterface, ProductRowsInterface
 {
 }

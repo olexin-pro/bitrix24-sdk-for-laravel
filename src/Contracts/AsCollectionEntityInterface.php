@@ -12,6 +12,5 @@ interface AsCollectionEntityInterface
 
     public function listEagerAsEntity(): Generator;
     public function getAsEntity(): Bitrix24DTOInterface|array;
-    public function getAsEntityWithProducts(): Bitrix24DTOInterface|array;
     public function fieldsCollection(): Collection;
 }

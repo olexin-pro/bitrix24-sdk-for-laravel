@@ -31,11 +31,11 @@ return [
         //'company' => DTO\Rest\CompanyEntity::class,
 
         // app
-        //'lead' => \App\DTO\Bitrix24\LeadDTO::class,
-        //'deal' => \App\DTO\Bitrix24\DealDto::class,
-        //'offer' => \App\DTO\Bitrix24\OfferDTO::class,
-        //'contact' => \App\DTO\Bitrix24\ContactDTO::class,
-        //'company' => \App\DTO\Bitrix24\CompanyDTO::class,
+        'lead' => \App\DTO\Bitrix24\LeadDTO::class,
+        'deal' => \App\DTO\Bitrix24\DealDto::class,
+        'offer' => \App\DTO\Bitrix24\OfferDTO::class,
+        'contact' => \App\DTO\Bitrix24\ContactDTO::class,
+        'company' => \App\DTO\Bitrix24\CompanyDTO::class,
     ],
 
     'generator' => [
