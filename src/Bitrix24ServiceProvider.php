@@ -12,6 +12,8 @@ use OlexinPro\Bitrix24\Console\Commands\GenerateBitrix24DTO;
 use OlexinPro\Bitrix24\Console\Commands\LoadOfflineEventsFromBitrix24;
 use OlexinPro\Bitrix24\Contracts\CrmGroupInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\Bitrix24OAuthServiceInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\CompanyInterface;
+use OlexinPro\Bitrix24\Contracts\Rest\ContactInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\DealInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\EventsInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\LeadInterface;
@@ -20,6 +22,8 @@ use OlexinPro\Bitrix24\Contracts\Rest\OfferInterface;
 use OlexinPro\Bitrix24\Contracts\Rest\UserInterface;
 use OlexinPro\Bitrix24\Contracts\TokenStorageInterface;
 use OlexinPro\Bitrix24\Repositories\OAuthTokenRepository;
+use OlexinPro\Bitrix24\Repositories\Rest\Company;
+use OlexinPro\Bitrix24\Repositories\Rest\Contact;
 use OlexinPro\Bitrix24\Repositories\Rest\CrmGroupRest;
 use OlexinPro\Bitrix24\Repositories\Rest\Deal;
 use OlexinPro\Bitrix24\Repositories\Rest\Events;
@@ -90,6 +94,8 @@ class Bitrix24ServiceProvider extends ServiceProvider
                 $app->make(LeadInterface::class),
                 $app->make(DealInterface::class),
                 $app->make(OfferInterface::class),
+                $app->make(ContactInterface::class),
+                $app->make(CompanyInterface::class),
             );
         });
 
@@ -104,10 +110,12 @@ class Bitrix24ServiceProvider extends ServiceProvider
         $this->app->alias('bitrix24.rest', Bitrix24RestFactory::class);
 
 
+        $this->app->bind(EventsInterface::class, Events::class);
         $this->app->bind(LeadInterface::class, Lead::class);
         $this->app->bind(DealInterface::class, Deal::class);
         $this->app->bind(OfferInterface::class, Offer::class);
-        $this->app->bind(EventsInterface::class, Events::class);
+        $this->app->bind(ContactInterface::class, Contact::class);
+        $this->app->bind(CompanyInterface::class, Company::class);
     }
 
     private function bootCommands(): void
@@ -123,8 +131,6 @@ class Bitrix24ServiceProvider extends ServiceProvider
     private function macrosAndMixins(): void
     {
         $bitrix24client = $this->app->make(Bitrix24Client::class);
-        Http::macro('bitrix24', function () use ($bitrix24client) {
-            return $bitrix24client->getHttp();
-        });
+        Http::macro('bitrix24', fn() => $bitrix24client->getHttp());
     }
 }

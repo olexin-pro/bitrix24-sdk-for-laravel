@@ -24,14 +24,18 @@ return [
     ],
     'default_entity_class' => [
         // package
-        // 'lead' => \OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity::class,
-        // 'deal' => \OlexinPro\Bitrix24\Entities\DTO\Rest\DealEntity::class,
-        //'offer' => \OlexinPro\Bitrix24\Entities\DTO\Rest\OfferEntity::class,
+        // 'lead' => DTO\Rest\LeadEntity::class,
+        // 'deal' => DTO\Rest\DealEntity::class,
+        //'offer' => DTO\Rest\OfferEntity::class,
+        //'contact' => DTO\Rest\ContactEntity::class,
+        //'company' => DTO\Rest\CompanyEntity::class,
 
         // app
-        'lead' => \App\DTO\Bitrix24\LeadDTO::class,
-        'deal' => \App\DTO\Bitrix24\DealDto::class,
-        'offer' => \App\DTO\Bitrix24\OfferDTO::class,
+        //'lead' => \App\DTO\Bitrix24\LeadDTO::class,
+        //'deal' => \App\DTO\Bitrix24\DealDto::class,
+        //'offer' => \App\DTO\Bitrix24\OfferDTO::class,
+        //'contact' => \App\DTO\Bitrix24\ContactDTO::class,
+        //'company' => \App\DTO\Bitrix24\CompanyDTO::class,
     ],
 
     'generator' => [

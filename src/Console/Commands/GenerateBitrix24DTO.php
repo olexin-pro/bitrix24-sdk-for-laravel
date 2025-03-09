@@ -75,6 +75,8 @@ class GenerateBitrix24DTO extends Command
             'lead' => Bitrix24Rest::crm()->lead()->fieldsCollection(),
             'deal' => Bitrix24Rest::crm()->deal()->fieldsCollection(),
             'offer' => Bitrix24Rest::crm()->offer()->fieldsCollection(),
+            'contact' => Bitrix24Rest::crm()->contact()->fieldsCollection(),
+            'company' => Bitrix24Rest::crm()->company()->fieldsCollection(),
             default => throw new \InvalidArgumentException("Entity \"$entity\" is not support ")
         };
     }
