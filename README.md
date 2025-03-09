@@ -1,32 +1,60 @@
-# Bitrix24 SDK for Laravel
+# Bitrix24 SDK для Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/olexin-pro/bitrix24-sdk-for-laravel.svg?style=flat-square)](https://packagist.org/packages/olexin-pro/bitrix24-sdk-for-laravel)
 [![Total Downloads](https://img.shields.io/packagist/dt/olexin-pro/bitrix24-sdk-for-laravel.svg?style=flat-square)](https://packagist.org/packages/olexin-pro/bitrix24-sdk-for-laravel)
 
-## Introduction
+[English readme](README_EN.md)
 
-This package provides a simple way to integrate Bitrix24 API with Laravel applications. It includes tools to authorize,
-handle events, and interact with various Bitrix24 services.
+## Содержание
 
-## Installation
+- [Введение](#введение)
+- [Требования](#требования)
+- [Установка](#установка)
+- [Настройка](#настройка)
+- [Использование](#использование)
+    - [HTTP клиент](#http-клиент)
+    - [Генерация DTO](#генерация-dto)
+    - [Работа с REST API](#работа-с-rest-api)
+    - [Обработка событий](#обработка-событий)
+- [Лицензия](#лицензия)
+- [Содействие](#содействие)
 
-To get started, you need to add this package to your Laravel project. Use Composer to install it:
+## Введение
+
+Данный пакет предоставляет простой способ интеграции Bitrix24 API с приложениями Laravel. Он включает в себя инструменты
+для авторизации, обработки событий и взаимодействия с различными сервисами Bitrix24.
+
+### Ключевые возможности
+
+- Удобная авторизация и работа с OAuth токенами
+- Генерация DTO классов на основе полей сущностей Bitrix24
+- Типизированный доступ к REST API с автодополнением в IDE
+- Обработка офлайн событий через Laravel Events
+- Конвертация типов данных Bitrix24 в стандартные PHP типы
+
+## Требования
+
+- PHP 8.2 или выше
+- Laravel 10.0 или выше
+- Доступ к Bitrix24 с зарегистрированным приложением
+
+## Установка
+
+Для установки пакета используйте Composer:
 
 ```bash
 composer require olexin-pro/bitrix24-sdk-for-laravel
 ```
 
-## Configuration
+## Настройка
 
-After installation, publish the configuration file:
+После установки опубликуйте конфигурационный файл:
 
 ```bash
 php artisan vendor:publish --provider="OlexinPro\Bitrix24\Bitrix24ServiceProvider" --tag="config"
 ```
 
-## Usage
-
-### Example of the configuration:
+### Пример конфигурации:
 
 ```php
 // config/bitrix24.php
@@ -39,7 +67,7 @@ return [
 ];
 ```
 
-### Make sure to add these values to your .env file:
+### Добавьте следующие значения в ваш .env файл:
 
 ```dotenv
 BITRIX24_DOMAIN=https://portal.bitrix24.kz
@@ -48,13 +76,17 @@ BITRIX24_CLIENT_SECRET=your-client-secret
 BITRIX24_REDIRECT_URI=your-redirect-uri
 ```
 
-### Свободное использование с помощью Http клиента:
+## Использование
+
+### HTTP клиент
+
+Пакет добавляет макрос `bitrix24()` в HTTP фасад Laravel для удобного взаимодействия с API:
 
 ```php
 $resp = \Http::bitrix24()->get('/user.current')->json();
 dump($resp); // Пользователь от которого произошла OAuth авторизация
 /*
-// Result:
+// Результат:
 array [▼
   "ID" => "1"
   "XML_ID" => "123321"
@@ -82,8 +114,8 @@ array [▼
 ]
 */
 
-// Or
-$resp = \Http::bitrix24()->post('/crm.lead.add',[
+// Пример добавления нового лида
+$resp = \Http::bitrix24()->post('/crm.lead.add', [
     'fields' => [
         "TITLE" => "ИП Титов",
         "NAME" => "Глеб",
@@ -94,17 +126,17 @@ $resp = \Http::bitrix24()->post('/crm.lead.add',[
         "ASSIGNED_BY_ID" => 1,
         "CURRENCY_ID" => "KZT", // RUB, USD
         "OPPORTUNITY" => 12500,
-        "PHONE"=> [
-            ["VALUE" => "555888" => "VALUE_TYPE" => "WORK"]
+        "PHONE" => [
+            ["VALUE" => "555888", "VALUE_TYPE" => "WORK"]
         ],
         "WEB" => [
-            ["VALUE" => "www.mysite.com","VALUE_TYPE" => "WORK"]
+            ["VALUE" => "www.mysite.com", "VALUE_TYPE" => "WORK"]
         ],
         "params" => ["REGISTER_SONET_EVENT" => "Y"]
     ]
 ])->json();
 
-// result:
+// результат:
 /*
 array:[
     "result" => 3465,
@@ -122,32 +154,36 @@ array:[
 */
 ```
 
-### Генерация DTO на основание полей из Битрикс24
+### Генерация DTO
 
-```shell
+Пакет позволяет автоматически генерировать Data Transfer Objects (DTO) на основе полей сущностей Bitrix24:
+
+```bash
 php artisan bitrix24:dto deal --with-products --force
 ```
 
-Будет создано ДТО:
+В результате будет создан класс DTO:
 
 ```php
+<?php
+
 declare(strict_types=1);
 
-namespace App\DTO\Bitrix24; // can be changed in config
+namespace App\DTO\Bitrix24; // может быть изменено в конфигурации
 
-// imports: use ...
+// импорты: use ...
 
 final class DealDTO extends AbstractBitrix24DTO
 {
     #[Bitrix24Field('ID', Bitrix24TypeEnum::INT, false)]
     public int $id;
     
-    // Standard fields....
+    // Стандартные поля...
     
     #[Bitrix24Field('UF_CRM_66B9CF21B5F8B', Bitrix24TypeEnum::ARRAY, false)]
     public ?array $ufCrm66b9cf21b5f8b;
     
-    // users fields....
+    // Пользовательские поля...
     
     /**
      * @var Collection<\OlexinPro\Bitrix24\Entities\DTO\Rest\CrmProductEntity>|null
@@ -157,70 +193,198 @@ final class DealDTO extends AbstractBitrix24DTO
 }
 ```
 
-Использование команды:
+#### Использование команды генерации DTO
 
-`php bitrix24:dto [options] [--] <entity> [<class-name>]`
+```bash
+php bitrix24:dto [options] [--] <entity> [<class-name>]
+```
 
-Arguments:
+Аргументы:
 
-| **Name**   | **Description**           |
-|------------|---------------------------|
-| entity     | The Bitrix24 entity name  |
-| class-name | The name of the DTO class |
+| **Имя**    | **Описание**                 |
+|------------|------------------------------|
+| entity     | Название сущности Bitrix24   |
+| class-name | Имя класса DTO (опционально) |
 
-Options:
+Опции:
 
-| **Name**        | **Description**                                    |
-|-----------------|----------------------------------------------------|
-| --force         | Force the operation to run when DTO already exists |
-| --with-products | Add products field to DTO                          |
+| **Имя**         | **Описание**                                      |
+|-----------------|---------------------------------------------------|
+| --force         | Принудительная генерация, если DTO уже существует |
+| --with-products | Добавить поле products в DTO                      |
 
-#### Возможности генерации
+#### Кастомизация конвертеров типов
 
-- <s>Контакты</s>
-- <s>Компании</s>
-- <s>Лиды</s>
-- <s>Сделки</s>
-- <s>Предложения</s>
-- Пользователи
-- Смарт-процессы
-- Реквизиты
-- Задачи
+При необходимости вы можете изменить существующие конвертеры DTO или написать свои:
+
+```php
+use DateTimeInterface;
+use OlexinPro\Bitrix24\Entities\DTO\Bitrix24Field;
+
+#[Bitrix24Field('DATE_CREATE', Bitrix24TypeEnum::DATE)]
+public ?DateTimeInterface $createdAt;
+
+// Bitrix24TypeEnum::DATE сконвертирует значение в объект Carbon
+```
+
+В атрибуте `Bitrix24Field` первым параметром указывается имя поля из данных Bitrix24. Вторым параметром можно передать
+свой конвертер, реализующий интерфейс `\OlexinPro\Bitrix24\Entities\DTO\Converters\Bitrix24TypeConverterInterface`:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\DTO\Converters;
+
+final class MyBooleanConverter implements Bitrix24TypeConverterInterface
+{
+    private const array TRUE_ITEMS = [
+        'Y', '1', 'true', 'on', 1, true,
+    ];
+    
+    public function convert($value): bool
+    {
+        return in_array($value, self::TRUE_ITEMS, true);
+    }
+}
+
+#[Bitrix24Field('ACTIVE', \App\DTO\Converters\MyBooleanConverter::class)]
+public bool $active;
+```
+
+Третий параметр указывает обязательность поля. Если установлено значение `true`, то при отсутствии данных для этого поля
+будет выброшено исключение.
+
+#### Поддерживаемые сущности для генерации DTO
+
+- ✓ Контакты
+- ✓ Компании
+- ✓ Лиды
+- ✓ Сделки
+- ✓ Предложения
+- Смарт-процессы (в разработке)
+- Реквизиты (в разработке)
+- Задачи (в разработке)
+- Структура компании (в разработке)
+- Товары (в разработке)
+- Предложения товаров (в разработке)
+
+### Работа с REST API
+
+Для работы с REST API Bitrix24 в пакете предусмотрен удобный фасад `Bitrix24Rest`. Подробную информацию о методах API
+можно найти в [официальной документации](https://apidocs.bitrix24.ru/).
+
+```php
+use OlexinPro\Bitrix24\Facades\Bitrix24Rest;
+
+// Получение лида по ID (crm.lead.get)
+Bitrix24Rest::crm()->lead()->get(123);
+```
+
+Структура вызова методов соответствует структуре методов REST API Bitrix24:
+
+```php
+use OlexinPro\Bitrix24\Facades\Bitrix24Rest;
+
+// соответствует: crm.lead.get
+Bitrix24Rest::crm()->lead()->get(123);
+
+// соответствует: crm.lead.list
+Bitrix24Rest::crm()->lead()->list();
+
+// соответствует: crm.lead.productrows.get
+Bitrix24Rest::crm()->lead()->productRowsGet(123);
+```
+
+Фасад поддерживает автодополнение в IDE, что упрощает работу с API.
+
+#### Расширенные методы сущностей
+
+Для некоторых сущностей доступны дополнительные методы, возвращающие типизированные объекты:
+
+```php
+use OlexinPro\Bitrix24\Facades\Bitrix24Rest;
+
+// Получение сделки в виде типизированного объекта
+$deal = Bitrix24Rest::crm()->deal()->getAsEntity(123);
+// Результат:
+// OlexinPro\Bitrix24\Entities\DTO\Rest\DealEntity {#300 ▼
+//   #data: array:113 [▶]
+//   +id: 123
+//   +products: null
+//   // другие поля...
+// }
+
+// Получение сделки вместе с товарами
+$dealWithProducts = Bitrix24Rest::crm()->deal()->getAsEntityWithProducts(123);
+// Результат:
+// OlexinPro\Bitrix24\Entities\DTO\Rest\DealEntity {#300 ▼
+//   #data: array:113 [▶]
+//   +id: 123
+//   +products: Illuminate\Support\Collection{#403 ▼
+//     #items: array:4 [▼
+//       0 => OlexinPro\Bitrix24\Entities\DTO\Rest\CrmProductEntity{#404 ▶}
+//       1 => OlexinPro\Bitrix24\Entities\DTO\Rest\CrmProductEntity{#434 ▶}
+//       // и т.д.
+//     ]
+//   }
+//   // другие поля...
+// }
+```
+
+Все методы `AsEntity` по умолчанию возвращают DTO из пакета, но вы можете заменить их на свои сгенерированные. Для этого
+измените настройки в конфигурационном файле:
+
+```php
+return [
+    // ...
+    'default_entity_class' => [
+        'user' => \OlexinPro\Bitrix24\Entities\DTO\Rest\UserEntity::class,
+        'lead' => \OlexinPro\Bitrix24\Entities\DTO\Rest\LeadEntity::class,
+        'deal' => \OlexinPro\Bitrix24\Entities\DTO\Rest\DealEntity::class,
+        'offer' => \OlexinPro\Bitrix24\Entities\DTO\Rest\OfferEntity::class,
+        'contact' => \OlexinPro\Bitrix24\Entities\DTO\Rest\ContactEntity::class,
+        'company' => \OlexinPro\Bitrix24\Entities\DTO\Rest\CompanyEntity::class,
+    ],
+    // ...
+];
+```
 
 ### Обработка событий
 
-Офлайн события можно прослушивать с помощью команды:
+Для работы с офлайн событиями Bitrix24 пакет предоставляет специальную команду:
 
-```shell
+```bash
 php artisan bitrix24:load-offline-events
 ```
 
-Или к примеру получать офлайн события каждый час:
+Вы можете запускать загрузку офлайн событий по расписанию, например, каждый час:
 
-```shell
+```php
 Schedule::command('bitrix24:load-offline-events')->hourly();
 ```
 
-Будут загружены все офлайн события из Битрикс24 и запущены события Laravel, которые соответствуют имени события
-Битрикс24
+При выполнении команды будут загружены все офлайн события из Bitrix24 и запущены соответствующие события Laravel.
 
-| **Bitrix24 Event**     | **Laravel Event**   |
+#### Соответствие событий Bitrix24 и Laravel
+
+| **Событие Bitrix24**   | **Событие Laravel** |
 |------------------------|---------------------|
 | CATALOG.PRODUCT.ON.ADD | CatalogProductOnAdd |
 | ONCRMLEADADD           | OnCrmLeadAdd        |
 | ONCRMDYNAMICITEMADD    | OnCrmDynamicItemAdd |
 | ONCRMTYPEDELETE        | OnCrmTypeDelete     |
 
-В иницируемые Laravel события в конструктор передается dto объект с событием Bitrix24 `Bitrix24Event`,
-по этому все события Laravel должны реализовывать интерфейс `Bitrix24EventInterface`
-либо наследоваться от абстрактного класса `BaseBitrix24Event` который реализует этот интерфейс.
+В инициируемые события Laravel в конструктор передается объект `Bitrix24Event`. Все классы обработчиков событий должны
+реализовывать интерфейс `Bitrix24EventInterface` или наследоваться от абстрактного класса `BaseBitrix24Event`:
 
 ```php
 namespace App\Events;
 
 use OlexinPro\Bitrix24\Entities\Bitrix24Event;
 use OlexinPro\Bitrix24\Contracts\Bitrix24EventInterface;
-// other imports...
+// другие импорты...
 
 class OnCrmLeadDelete implements Bitrix24EventInterface
 {
@@ -251,7 +415,7 @@ class OnCrmLeadDelete implements Bitrix24EventInterface
     }
 }
 
-// OR
+// ИЛИ
 
 use OlexinPro\Bitrix24\Laravel\Events\BaseBitrix24Event;
 
@@ -271,11 +435,12 @@ class OnCrmLeadDelete extends BaseBitrix24Event
 }
 ```
 
-## License
+## Лицензия
 
-This package is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+Данный пакет распространяется под лицензией MIT. Для получения дополнительной информации смотрите
+файл [LICENSE](LICENSE).
 
-## Contribution
+## Содействие
 
-If you find a bug or want to improve the package, feel free to open an issue or pull request. All contributions are
-welcome!
+Если вы нашли ошибку или хотите улучшить пакет, не стесняйтесь создавать issue или pull request. Любой вклад
+приветствуется!
